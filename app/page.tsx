@@ -2,22 +2,15 @@
 
 import { useState } from 'react'
 import { Shield } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import WalletConnect from '@/components/wallet-connect'
-import BorrowerPortal from '@/components/borrower-portal'
-import LenderDashboard from '@/components/lender-dashboard'
+import ReputationDashboard from '@/components/reputation-dashboard'
+import ReceiptScanner from '@/components/receipt-scanner'
+import FeedbackRewards from '@/components/feedback-rewards'
+import CreditAssessment from '@/components/credit-assessment'
 
 export default function Home() {
   const [connectedWallet, setConnectedWallet] = useState<string | null>(null)
-  const [userRole, setUserRole] = useState<'borrower' | 'lender' | null>(null)
-
-  const handleRoleSelect = (role: 'borrower' | 'lender') => {
-    setUserRole(role)
-  }
-
-  const handleBack = () => {
-    setUserRole(null)
-  }
 
   return (
     <main className="min-h-screen bg-background">
@@ -30,17 +23,10 @@ export default function Home() {
               </div>
               <span className="text-lg font-semibold tracking-tight text-foreground">credit3</span>
             </div>
-            <div className="flex items-center gap-3">
-              {connectedWallet && userRole && (
-                <Button variant="ghost" onClick={handleBack} size="sm">
-                  Switch Role
-                </Button>
-              )}
-              <WalletConnect 
-                connectedWallet={connectedWallet}
-                onConnect={setConnectedWallet}
-              />
-            </div>
+            <WalletConnect 
+              connectedWallet={connectedWallet}
+              onConnect={setConnectedWallet}
+            />
           </div>
         </div>
       </header>
@@ -50,15 +36,15 @@ export default function Home() {
           <div className="mx-auto max-w-4xl text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-muted px-4 py-1.5 text-sm text-muted-foreground">
               <Shield className="h-3.5 w-3.5" />
-              <span>Privacy-Preserving DeFi Lending</span>
+              <span>Privacy-First Credit Information</span>
             </div>
             
             <h1 className="mb-6 text-5xl font-bold leading-[1.1] tracking-tight text-foreground md:text-7xl">
-              <span className="text-balance">Anonymous Credit, Automated Lending</span>
+              <span className="text-balance">Build Your On-Chain Credit Profile</span>
             </h1>
             
             <p className="mb-12 text-lg leading-relaxed text-muted-foreground md:text-xl">
-              Build your on-chain reputation with zero-knowledge proofs. Access instant loans through smart contracts.
+              Connect your financial data sources. Build verifiable reputation. Provide trusted credit information to partner banks.
             </p>
 
             <WalletConnect 
@@ -68,45 +54,41 @@ export default function Home() {
             />
           </div>
         </div>
-      ) : !userRole ? (
-        <div className="container mx-auto px-4 py-20">
-          <div className="mx-auto max-w-4xl">
-            <h2 className="mb-8 text-center text-3xl font-bold tracking-tight text-foreground">
-              Select Your Role
-            </h2>
-            <div className="grid gap-6 md:grid-cols-2">
-              <button
-                onClick={() => handleRoleSelect('borrower')}
-                className="glass-light group rounded-2xl border border-border/50 p-8 text-left transition-all hover:scale-[1.02] hover:border-foreground/20"
-              >
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-foreground transition-transform group-hover:scale-110">
-                  <Shield className="h-6 w-6 text-background" />
-                </div>
-                <h3 className="mb-2 text-2xl font-semibold text-foreground">Borrower</h3>
-                <p className="leading-relaxed text-muted-foreground">
-                  Build your reputation, generate ZK proofs, and access instant loans through smart contracts
-                </p>
-              </button>
-
-              <button
-                onClick={() => handleRoleSelect('lender')}
-                className="glass-light group rounded-2xl border border-border/50 p-8 text-left transition-all hover:scale-[1.02] hover:border-foreground/20"
-              >
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-foreground transition-transform group-hover:scale-110">
-                  <Shield className="h-6 w-6 text-background" />
-                </div>
-                <h3 className="mb-2 text-2xl font-semibold text-foreground">Lender</h3>
-                <p className="leading-relaxed text-muted-foreground">
-                  Configure loan products, verify ZK proofs, and manage your lending portfolio automatically
-                </p>
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : userRole === 'borrower' ? (
-        <BorrowerPortal walletAddress={connectedWallet} />
       ) : (
-        <LenderDashboard walletAddress={connectedWallet} />
+        <div className="container mx-auto px-4 py-8">
+          <Tabs defaultValue="reputation" className="mx-auto max-w-6xl">
+            <TabsList className="glass-light mb-8 grid w-full grid-cols-4 rounded-xl border border-border/50 p-1">
+              <TabsTrigger value="reputation" className="rounded-lg data-[state=active]:bg-foreground data-[state=active]:text-background">
+                Reputation
+              </TabsTrigger>
+              <TabsTrigger value="credit" className="rounded-lg data-[state=active]:bg-foreground data-[state=active]:text-background">
+                Credit Data
+              </TabsTrigger>
+              <TabsTrigger value="receipts" className="rounded-lg data-[state=active]:bg-foreground data-[state=active]:text-background">
+                Receipts
+              </TabsTrigger>
+              <TabsTrigger value="rewards" className="rounded-lg data-[state=active]:bg-foreground data-[state=active]:text-background">
+                Rewards
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="reputation" className="mt-0">
+              <ReputationDashboard walletAddress={connectedWallet} />
+            </TabsContent>
+
+            <TabsContent value="credit" className="mt-0">
+              <CreditAssessment walletAddress={connectedWallet} />
+            </TabsContent>
+
+            <TabsContent value="receipts" className="mt-0">
+              <ReceiptScanner walletAddress={connectedWallet} />
+            </TabsContent>
+
+            <TabsContent value="rewards" className="mt-0">
+              <FeedbackRewards walletAddress={connectedWallet} />
+            </TabsContent>
+          </Tabs>
+        </div>
       )}
     </main>
   )
