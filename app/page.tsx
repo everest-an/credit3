@@ -1,17 +1,18 @@
 'use client'
 
 import { useState } from 'react'
-import { Shield, Camera, Gift, Award, Sparkles } from 'lucide-react'
+import { Shield, Camera, Gift, Award, Sparkles, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import WalletConnect from '@/components/wallet-connect'
 import ReputationDashboard from '@/components/reputation-dashboard'
 import ReceiptScanner from '@/components/receipt-scanner'
 import FeedbackRewards from '@/components/feedback-rewards'
+import CreditAssessment from '@/components/credit-assessment'
 
 export default function Home() {
   const [connectedWallet, setConnectedWallet] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'scanner' | 'feedback'>('dashboard')
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'scanner' | 'feedback' | 'credit'>('dashboard')
 
   return (
     <main className="min-h-screen bg-background">
@@ -33,7 +34,6 @@ export default function Home() {
       </header>
 
       {!connectedWallet ? (
-        /* Hero Section - Minimal syndicate.io inspired design */
         <div className="container mx-auto px-4 py-20 md:py-32">
           <div className="mx-auto max-w-4xl text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-muted px-4 py-1.5 text-sm text-muted-foreground">
@@ -77,7 +77,6 @@ export default function Home() {
           </div>
         </div>
       ) : (
-        /* Main App with refined spacing */
         <div className="container mx-auto px-4 py-8 md:py-12">
           <div className="mb-8 flex gap-2">
             <Button
@@ -104,12 +103,21 @@ export default function Home() {
               <Gift className="mr-2 h-4 w-4" />
               Earn Rewards
             </Button>
+            <Button
+              variant={activeTab === 'credit' ? 'default' : 'ghost'}
+              onClick={() => setActiveTab('credit')}
+              className="min-w-fit"
+            >
+              <TrendingUp className="mr-2 h-4 w-4" />
+              Credit Score
+            </Button>
           </div>
 
           <div className="mx-auto max-w-5xl">
             {activeTab === 'dashboard' && <ReputationDashboard walletAddress={connectedWallet} />}
             {activeTab === 'scanner' && <ReceiptScanner walletAddress={connectedWallet} />}
             {activeTab === 'feedback' && <FeedbackRewards walletAddress={connectedWallet} />}
+            {activeTab === 'credit' && <CreditAssessment walletAddress={connectedWallet} />}
           </div>
         </div>
       )}
